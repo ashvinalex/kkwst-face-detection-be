@@ -24,5 +24,4 @@ To get started with this API, you'll need to clone this repository and install t
 git clone [https://github.com/ashvinalex/kkwst-face-detection-be/
 cd kkwst-face-detection-be
 pip install -r requirements.txt
-
 ```
