@@ -1,4 +1,4 @@
-# kkwst-face-detection-be
+# KKWST-Face-Detection-BE
 
 
 This is a Backend Module of kkwst-face-detection, RESTful API built using FastAPI.
