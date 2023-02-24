@@ -20,6 +20,9 @@ Faculty supervisor:
 
 To get started with this API, you'll need to clone this repository and install the required dependencies. You can do this by running the following commands:
 
-`git clone [https://github.com/ashvinalex/kkwst-face-detection-be/](https://github.com/ashvinalex/kkwst-face-detection-be/)`
-`cd kkwst-face-detection-be`
-`pip install -r requirements.txt`
+```
+git clone [https://github.com/ashvinalex/kkwst-face-detection-be/
+cd kkwst-face-detection-be
+pip install -r requirements.txt
+
+```
