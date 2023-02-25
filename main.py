@@ -6,24 +6,12 @@ from utils.db_utils import get_db
 from fastapi.responses import RedirectResponse
 
 description='''
---------------------
-### This is part of an AI and ML Capstone project 
-### 🥷🏼 Developers
-* Ashvin Alex
-* Bastian Castillo
-* Darshan Ruparel
-* Fadernel Bedoya
-* Marcelo Munoz
---------------------
-### Faculty supervisor:
-* William Pourmajidi
---------------------
-Version - 0.0.1
 '''
 
 app = FastAPI(title="KKWST Backend App",
               description=description,
               version="0.0.1")
+
 db = get_db()
 
 app.include_router(auth.router)
