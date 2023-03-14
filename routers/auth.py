@@ -29,7 +29,7 @@ class CreateUser(BaseModel):
     first_name: str
     last_name: str
     password: str
-    phone: int
+    phones: str
 
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -95,7 +95,7 @@ async def create_new_user(create_user: CreateUser, db: Session = Depends(get_db)
     create_user_model.last_name = create_user.last_name
     hashedpassword = get_password_hash(create_user.password)
     create_user_model.hashed_password = hashedpassword
-    create_user_model.phone_number = create_user.phone
+    create_user_model.phone_numbers = create_user.phones
     create_user_model.is_active = True
     db.add(create_user_model)
     db.commit()
@@ -109,7 +109,10 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         raise token_exception()
     token_expires = timedelta(minutes=20)
     token = create_access_token(user.username, user.user_id, expires_delta=token_expires)
-    return {'token': token}
+    return {
+        'expires_at': token_expires,
+        'token': token
+    }
 
 
 # Exceptions
