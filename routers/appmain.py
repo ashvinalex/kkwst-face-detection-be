@@ -2,7 +2,7 @@ from fastapi import Depends, File, APIRouter, HTTPException, status, Form, Uploa
 from sqlalchemy.orm import Session
 from routers.auth import get_current_user, get_user_exception
 from utils.db_utils import get_db
-from utils.base_models import User, User_Relation
+from utils.base_models import User
 from utils.responses import successful_response
 import models
 import uuid
@@ -33,7 +33,7 @@ async def update_user(user: User, current_user: dict = Depends(get_current_user)
 async def get_all_user_relation(user: dict = Depends(get_current_user), db: Session = Depends(get_db)):
     if user is None:
         raise get_user_exception()
-    return db.query(models.User_Relation).filter(models.User_Relation.user_id == user.get("id")).all()
+    return db.query(models.User_Relation).filter(str(models.User_Relation.user_id) == user.get("id")).all()
 
 
 @router.post("/app/user_relation/")

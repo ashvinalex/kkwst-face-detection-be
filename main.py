@@ -1,23 +1,35 @@
-from fastapi import FastAPI, Depends, File, APIRouter
-from sqlalchemy.orm import Session
-from routers.auth import get_current_user, get_user_exception
+from fastapi import FastAPI
 from routers import auth, appmain
 from utils.db_utils import get_db
 from fastapi.responses import RedirectResponse
-
-description='''
-'''
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="KKWST Backend App",
-              description=description,
+              description="",
               version="0.0.1")
 
+# set CORS
+origins = [
+    "http://localhost:4200",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Get database session
 db = get_db()
 
+# Set routers
 app.include_router(auth.router)
 app.include_router(appmain.router)
 
+
 @app.get("/")
 async def home():
-    return RedirectResponse("http://127.0.0.1:8001/docs")
+    return RedirectResponse("http://127.0.0.1:8000/docs")
 

@@ -1,6 +1,4 @@
 import sys
-
-sys.path.append("..")
 from fastapi import Depends, HTTPException, status, APIRouter
 from pydantic import BaseModel
 from typing import Optional
@@ -12,6 +10,8 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import datetime, timedelta
 from jose import jwt, JWTError
 import yaml
+
+sys.path.append("..")
 
 credentials = yaml.load(open('credentials.yml'), Loader=yaml.Loader)
 SECRET_KEY = credentials['secret']['secret_key']
@@ -86,6 +86,13 @@ async def get_current_user(token: str = Depends(oauth2_bearer)):
         raise get_user_exception()
 
 
+@router.get("/user")
+async def get_all_user_relation(user: dict = Depends(get_current_user), db: Session = Depends(get_db)):
+    if user is None:
+        raise get_user_exception()
+    return db.query(models.User()).filter(str(models.User.user_id) == user.get("id")).all()
+
+
 @router.post('/create/user')
 async def create_new_user(create_user: CreateUser, db: Session = Depends(get_db)):
     create_user_model = models.User()
@@ -93,8 +100,8 @@ async def create_new_user(create_user: CreateUser, db: Session = Depends(get_db)
     create_user_model.email = create_user.email
     create_user_model.first_name = create_user.first_name
     create_user_model.last_name = create_user.last_name
-    hashedpassword = get_password_hash(create_user.password)
-    create_user_model.hashed_password = hashedpassword
+    hashed_password = get_password_hash(create_user.password)
+    create_user_model.hashed_password = hashed_password
     create_user_model.phone_numbers = create_user.phones
     create_user_model.is_active = True
     db.add(create_user_model)
@@ -111,7 +118,10 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     token = create_access_token(user.username, user.user_id, expires_delta=token_expires)
     return {
         'expires_at': token_expires,
-        'token': token
+        'token': token,
+        'firstname': user.first_name,
+        'lastname': user.last_name,
+        'id': user.user_id
     }
 
 
