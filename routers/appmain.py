@@ -33,7 +33,7 @@ async def update_user(user: User, current_user: dict = Depends(get_current_user)
 async def get_all_user_relation(user: dict = Depends(get_current_user), db: Session = Depends(get_db)):
     if user is None:
         raise get_user_exception()
-    return db.query(models.User_Relation).filter(str(models.User_Relation.user_id) == user.get("id")).all()
+    return db.query(models.User_Relation).filter(models.User_Relation.user_id == user.get("id")).all()
 
 
 @router.post("/app/user_relation/")
@@ -45,6 +45,7 @@ async def create_user_relation(firstname: str = Form(...),
                                db: Session = Depends(get_db)):
     if user is None:
         raise get_user_exception()
+
     user_relation_model = models.User_Relation()
     user_relation_model.first_name = firstname
     user_relation_model.last_name = lastname
@@ -105,7 +106,7 @@ async def delete_user_relation(user_relation_id: int,
     return successful_response(200)
 
 
-async def upload_image(image: UploadFile, file_name: uuid):
+async def upload_image(image: UploadFile, file_name: uuid = None):
     # Create the directory if it doesn't exist
     image_path = os.path.join(os.getcwd(), "resources/static/images/")
     if not os.path.exists(image_path):

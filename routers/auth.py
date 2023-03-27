@@ -32,6 +32,13 @@ class CreateUser(BaseModel):
     phones: str
 
 
+class CreateUserResponse(BaseModel):
+    username: str
+    first_name: str
+    last_name: str
+    phones: list[str]
+
+
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 models.Base.metadata.create_all(bind=engine)
@@ -86,11 +93,25 @@ async def get_current_user(token: str = Depends(oauth2_bearer)):
         raise get_user_exception()
 
 
-@router.get("/user")
-async def get_all_user_relation(user: dict = Depends(get_current_user), db: Session = Depends(get_db)):
+@router.get("/admin")
+async def get_admin(user: dict = Depends(get_current_user), db: Session = Depends(get_db)) -> CreateUserResponse:
     if user is None:
         raise get_user_exception()
-    return db.query(models.User()).filter(str(models.User.user_id) == user.get("id")).all()
+
+    admin_user = db.query(models.User).filter(models.User.user_id == user.get("id")).first()
+
+    phone_list = []
+    for phone in admin_user.phone_numbers.split(";")[:]:
+        phone_list.append(phone)
+
+    admin_user_response = CreateUserResponse(
+        username=admin_user.username,
+        first_name=admin_user.first_name,
+        last_name=admin_user.last_name,
+        phones=phone_list
+    )
+
+    return admin_user_response
 
 
 @router.post('/create/user')
