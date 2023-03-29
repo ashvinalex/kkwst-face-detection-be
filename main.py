@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from routers import auth, appmain
 from utils.db_utils import get_db
 from fastapi.responses import RedirectResponse
@@ -7,6 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI(title="KKWST Backend App",
               description="",
               version="0.0.1")
+
+app.mount("/static", StaticFiles(directory="resources/static"), name="static")
 
 # set CORS
 origins = [
