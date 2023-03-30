@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from routers import auth, appmain
+from routers import auth, appmain, service
 from utils.db_utils import get_db
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -30,6 +30,7 @@ db = get_db()
 # Set routers
 app.include_router(auth.router)
 app.include_router(appmain.router)
+app.include_router(service.router)
 
 
 @app.get("/")
